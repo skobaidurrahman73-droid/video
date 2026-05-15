@@ -3,178 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মাল্টিপুল ভিডিও ওয়াচ টাইম - কাস্টম ডিসপ্লে</title>
+    <title>প্রো মাল্টি-ব্রাউজার টুল</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-        :root {
-            --primary-bg: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #3b82f6;
-            --text-color: #f8fafc;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-color);
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center;
-            overflow-x: hidden;
-        }
-
-        header {
-            width: 100%; padding: 15px; text-align: center;
-            background: var(--card-bg); border-bottom: 2px solid #334155;
-        }
-
-        .logo-img { max-width: 140px; height: auto; border-radius: 8px; }
-
-        .search-container {
-            margin: 25px 0; width: 90%; max-width: 700px;
-            background: var(--card-bg); padding: 20px;
-            border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; text-align: center; }
+        header { padding: 15px; background: var(--card); border-bottom: 2px solid #334155; }
+        .logo { max-width: 130px; border-radius: 8px; }
+        .setup-box { background: var(--card); padding: 25px; margin: 20px auto; width: 90%; max-width: 750px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-
-        input[type="text"], input[type="number"] {
-            padding: 12px 15px; border-radius: 10px; border: 2px solid #334155;
-            outline: none; background: #f1f5f9; color: #1e293b; font-size: 14px;
-        }
-
-        input[type="text"] { flex: 2; min-width: 250px; }
-        input[type="number"] { flex: 1; min-width: 100px; }
-
-        button.main-btn {
-            width: 100%; padding: 14px; border-radius: 10px; border: none;
-            background: var(--accent-color); color: white;
-            font-weight: bold; cursor: pointer; font-size: 16px;
-        }
-
-        .limit-note { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 8px; }
-
-        .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px; width: 95%; padding-bottom: 100px;
-        }
-
-        .video-card {
-            background: var(--card-bg); padding: 10px;
-            border-radius: 12px; border: 1px solid #334155; text-align: center;
-        }
-
-        iframe { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; border: none; }
-
-        /* --- Mandatory Click Ad Overlay --- */
-        #adOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.96); display: flex;
-            justify-content: center; align-items: center; z-index: 99999;
-        }
-
-        .ad-content {
-            background: #ffffff; color: #1e293b; padding: 40px 30px;
-            border-radius: 24px; text-align: center; max-width: 400px; width: 90%;
-            border: 6px solid #ef4444;
-        }
-
-        .visit-btn {
-            display: block; padding: 18px; background: #10b981; color: white;
-            text-decoration: none; border-radius: 15px; font-size: 20px;
-            font-weight: 800; animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
-
-        .controls {
-            position: fixed; bottom: 20px; background: rgba(30, 41, 59, 0.95);
-            padding: 12px 25px; border-radius: 40px; display: flex; gap: 15px;
-        }
-
-        .control-btn {
-            padding: 8px 18px; border-radius: 20px; border: 1px solid #475569;
-            background: transparent; color: #f8fafc; cursor: pointer;
-        }
+        input { padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #f1f5f9; color: #1e293b; outline: none; }
+        .url-in { flex: 3; min-width: 250px; }
+        .reg-in, .num-in { flex: 1; min-width: 120px; }
+        .main-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .main-btn:hover { background: #2563eb; transform: scale(1.01); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; width: 95%; padding: 20px 0 100px 0; }
+        .card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid #334155; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card-h { background: #2d3748; padding: 10px; font-size: 14px; border-bottom: 1px solid #4a5568; }
+        iframe { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
+        .acc-info { padding: 15px; background: #1a202c; display: flex; flex-direction: column; gap: 8px; }
+        .acc-info input { background: transparent; border: none; border-bottom: 1px solid #4a5568; color: #cbd5e1; font-size: 13px; padding: 5px; }
+        
+        /* Ad Overlay */
+        #adOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .ad-box { background: white; color: black; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; border: 6px solid #ef4444; }
+        .ad-btn { display: block; padding: 18px; background: #10b981; color: white; text-decoration: none; border-radius: 12px; font-weight: 800; font-size: 20px; margin-top: 20px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <div id="adOverlay">
-        <div class="ad-content">
-            <h2>সার্ভার অ্যাক্টিভেশন!</h2>
-            <p>ওয়াচ টাইম সার্ভিসটি সঠিকভাবে লোড করতে নিচের বাটনে ক্লিক করে সার্ভার অ্যাক্টিভেট করুন।</p>
-            <a href="https://www.profitablecpmratenetwork.com/qudnwhcdb2?key=b44f9fe1af42dbc0062d8e23b73e1125" 
-               target="_blank" class="visit-btn" onclick="unlockSite()">সার্ভার অ্যাক্টিভেট করুন</a>
+        <div class="ad-box">
+            <h2 style="color:#dc2626">অ্যাক্টিভেশন প্রয়োজন!</h2>
+            <p>আপনার সার্ভিসটি সচল করতে নিচের বাটনে ক্লিক করে সার্ভার অ্যাক্টিভেট করুন।</p>
+            <a href="https://www.profitablecpmratenetwork.com/qudnwhcdb2?key=b44f9fe1af42dbc0062d8e23b73e1125" target="_blank" class="ad-btn" onclick="unlock()">সার্ভার অ্যাক্টিভেট করুন</a>
         </div>
     </div>
 
-    <header>
-        <img src="1774259848280.png" alt="Logo" class="logo-img">
-    </header>
+    <header><img src="1774259848280.png" alt="Logo" class="logo"></header>
 
-    <div class="search-container">
+    <div class="setup-box">
         <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="ইউটিউব বা ফেসবুক ভিডিও লিংক দিন...">
-            <input type="number" id="tabCount" placeholder="ডিসপ্লে" min="1" max="50">
+            <input type="text" id="regNo" class="reg-in" placeholder="রেজিস্ট্রেশন নম্বর">
+            <input type="text" id="vUrl" class="url-in" placeholder="ইউটিউব বা ফেসবুক লিংক">
+            <input type="number" id="vCount" class="num-in" placeholder="ডিসপ্লে" min="1" max="50">
         </div>
-        <button class="main-btn" onclick="startWatching()">ওয়াচ টাইম শুরু করুন</button>
-        <p class="limit-note">* সর্বোচ্চ ৫০টি ডিসপ্লে ব্যবহার করা যাবে।</p>
+        <button class="main-btn" onclick="startSystem()">সেশন শুরু করুন</button>
+        <p style="font-size: 11px; margin-top: 10px; color: #94a3b8;">* সর্বোচ্চ ৫০টি ডিসপ্লে ব্যবহার সম্ভব। তথ্য স্বয়ংক্রিয়ভাবে সেভ হবে।</p>
     </div>
 
-    <div class="grid-container" id="videoGrid"></div>
-
-    <div class="controls">
-        <button class="control-btn" onclick="location.reload()">রিফ্রেশ</button>
-        <button class="control-btn" onclick="clearVideos()">সব মুছুন</button>
-    </div>
+    <div class="grid" id="grid"></div>
 
     <script>
-        function unlockSite() {
-            setTimeout(() => {
-                document.getElementById('adOverlay').style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }, 1500);
+        // আপনার স্ক্রিনশট থেকে প্রাপ্ত ফায়ারবেজ কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNku64g2nh2_B3qITUtZG2-MNQzKeIIhE",
+            authDomain: "video-boster-a1d40.firebaseapp.com",
+            databaseURL: "https://video-boster-a1d40-default-rtdb.firebaseio.com",
+            projectId: "video-boster-a1d40",
+            storageBucket: "video-boster-a1d40.firebasestorage.app",
+            messagingSenderId: "708828264373",
+            appId: "1:708828264373:web:c799c3e8efb98aa09c8bfc"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function unlock() {
+            setTimeout(() => { document.getElementById('adOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }, 1500);
         }
         document.body.style.overflow = 'hidden';
 
-        function startWatching() {
-            const urlInput = document.getElementById('videoUrl').value.trim();
-            const countInput = document.getElementById('tabCount').value;
-            const grid = document.getElementById('videoGrid');
-            
-            if (!urlInput) return alert("লিংক দিন!");
-            
-            let numTabs = parseInt(countInput) || 1;
-            if (numTabs > 50) numTabs = 50;
+        function startSystem() {
+            const reg = document.getElementById('regNo').value.trim();
+            const url = document.getElementById('vUrl').value.trim();
+            const count = Math.min(parseInt(document.getElementById('vCount').value) || 1, 50);
+            const grid = document.getElementById('grid');
 
+            if(!reg || !url) return alert("রেজিস্ট্রেশন নম্বর এবং ভিডিও লিংক দিন!");
             grid.innerHTML = "";
 
-            for (let i = 1; i <= numTabs; i++) {
-                const card = document.createElement('div');
-                card.className = 'video-card';
-                let embedUrl = "";
-
-                if (urlInput.includes("facebook.com") || urlInput.includes("fb.watch")) {
-                    // ফেসবুকের জন্য ক্লিন এম্বেড ইউআরএল
-                    embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(urlInput)}&show_text=0&width=560&t=0&autoplay=1&mute=1`;
-                } else if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-                    let videoId = "";
-                    if (urlInput.includes("v=")) videoId = urlInput.split("v=")[1].split("&")[0];
-                    else if (urlInput.includes("youtu.be/")) videoId = urlInput.split("youtu.be/")[1].split("?")[0];
-                    embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
-                }
-
-                if (embedUrl) {
-                    card.innerHTML = `<h4>ডিসপ্লে ${i}</h4><iframe src="${embedUrl}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
-                    grid.appendChild(card);
+            for(let i=1; i<=count; i++) {
+                let embed = "";
+                if(url.includes("facebook") || url.includes("fb.watch")) {
+                    embed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&autoplay=1&mute=1`;
                 } else {
-                    alert("সঠিক ভিডিও লিংক দিন!");
-                    break;
+                    let id = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop().split("?")[0];
+                    embed = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
                 }
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-h">ডিসপ্লে ${i} - অনলাইন</div>
+                    <iframe src="${embed}" allow="autoplay"></iframe>
+                    <div class="acc-info">
+                        <input type="text" id="gm-${i}" placeholder="জিমেইল আইডি দিন..." onchange="updateFirebase(${i})">
+                        <input type="text" id="fb-${i}" placeholder="ফেসবুক আইডি দিন..." onchange="updateFirebase(${i})">
+                    </div>
+                `;
+                grid.appendChild(card);
             }
         }
 
-        function clearVideos() { 
-            document.getElementById('videoGrid').innerHTML = ""; 
+        function updateFirebase(index) {
+            const reg = document.getElementById('regNo').value;
+            const gmail = document.getElementById(`gm-${index}`).value;
+            const fb = document.getElementById(`fb-${index}`).value;
+
+            if(reg) {
+                db.ref('UserSessions/' + reg + '/Display_' + index).set({
+                    Gmail: gmail,
+                    Facebook: fb,
+                    Time: new Date().toLocaleString()
+                });
+                console.log("ডাটা সেভ হয়েছে ডিসপ্লে " + index + " এর জন্য।");
+            }
         }
     </script>
 </body>
