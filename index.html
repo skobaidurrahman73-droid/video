@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মাল্টিপুল ভিডিও ওয়াচ টাইম</title>
+    <title>মাল্টিপুল ভিডিও ওয়াচ টাইম - কাস্টম ডিসপ্লে</title>
     <style>
         :root {
             --primary-bg: #0f172a;
@@ -13,188 +13,86 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--primary-bg);
             color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
         }
 
         header {
-            width: 100%;
-            padding: 15px;
-            text-align: center;
-            background: var(--card-bg);
-            border-bottom: 2px solid #334155;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 100%; padding: 15px; text-align: center;
+            background: var(--card-bg); border-bottom: 2px solid #334155;
         }
 
-        .logo-img {
-            max-width: 140px;
-            height: auto;
-            border-radius: 8px;
+        .logo-img { max-width: 140px; height: auto; border-radius: 8px; }
+
+        .search-container {
+            margin: 25px 0; width: 90%; max-width: 700px;
+            background: var(--card-bg); padding: 20px;
+            border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        .search-box {
-            margin: 30px 0;
-            display: flex;
-            gap: 10px;
-            width: 90%;
-            max-width: 650px;
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+
+        input[type="text"], input[type="number"] {
+            padding: 12px 15px; border-radius: 10px; border: 2px solid #334155;
+            outline: none; background: #f1f5f9; color: #1e293b; font-size: 14px;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 14px 20px;
-            border-radius: 30px;
-            border: 2px solid #334155;
-            outline: none;
-            font-size: 16px;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
+        input[type="text"] { flex: 2; min-width: 250px; }
+        input[type="number"] { flex: 1; min-width: 100px; }
 
         button.main-btn {
-            padding: 14px 28px;
-            border-radius: 30px;
-            border: none;
-            background: var(--accent-color);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            background: var(--accent-color); color: white;
+            font-weight: bold; cursor: pointer; font-size: 16px;
         }
 
-        button.main-btn:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-        }
+        .limit-note { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 8px; }
 
         .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            width: 95%;
-            padding-bottom: 100px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; width: 95%; padding-bottom: 100px;
         }
 
         .video-card {
-            background: var(--card-bg);
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: var(--card-bg); padding: 10px;
+            border-radius: 12px; border: 1px solid #334155; text-align: center;
         }
 
-        .video-card h4 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            color: #94a3b8;
-        }
-
-        iframe {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            border-radius: 8px;
-            border: none;
-        }
+        iframe { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; border: none; }
 
         /* --- Mandatory Click Ad Overlay --- */
         #adOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.96);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.96); display: flex;
+            justify-content: center; align-items: center; z-index: 99999;
         }
 
         .ad-content {
-            background: #ffffff;
-            color: #1e293b;
-            padding: 40px 30px;
-            border-radius: 24px;
-            text-align: center;
-            max-width: 420px;
-            width: 90%;
+            background: #ffffff; color: #1e293b; padding: 40px 30px;
+            border-radius: 24px; text-align: center; max-width: 400px; width: 90%;
             border: 6px solid #ef4444;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        .ad-content h2 {
-            color: #dc2626;
-            margin: 0 0 15px 0;
-            font-size: 24px;
-        }
-
-        .ad-content p {
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-weight: 500;
         }
 
         .visit-btn {
-            display: block;
-            padding: 18px;
-            background: #10b981;
-            color: white;
-            text-decoration: none;
-            border-radius: 15px;
-            font-size: 22px;
-            font-weight: 800;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            animation: shakeBtn 0.6s infinite;
+            display: block; padding: 18px; background: #10b981; color: white;
+            text-decoration: none; border-radius: 15px; font-size: 20px;
+            font-weight: 800; animation: pulse 1.5s infinite;
         }
 
-        @keyframes shakeBtn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
-        .note {
-            display: block;
-            margin-top: 20px;
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        /* Bottom Controls */
         .controls {
-            position: fixed;
-            bottom: 20px;
-            background: rgba(30, 41, 59, 0.95);
-            padding: 12px 25px;
-            border-radius: 40px;
-            display: flex;
-            gap: 15px;
-            backdrop-filter: blur(8px);
-            border: 1px solid #475569;
+            position: fixed; bottom: 20px; background: rgba(30, 41, 59, 0.95);
+            padding: 12px 25px; border-radius: 40px; display: flex; gap: 15px;
         }
 
         .control-btn {
-            padding: 8px 18px;
-            border-radius: 20px;
-            border: 1px solid #475569;
-            background: transparent;
-            color: #f8fafc;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .control-btn:hover {
-            background: #334155;
+            padding: 8px 18px; border-radius: 20px; border: 1px solid #475569;
+            background: transparent; color: #f8fafc; cursor: pointer;
         }
     </style>
 </head>
@@ -203,13 +101,10 @@
     <!-- Mandatory Ad Overlay -->
     <div id="adOverlay">
         <div class="ad-content">
-            <h2>অ্যাক্টিভেশন প্রয়োজন!</h2>
-            <p>আপনার সার্ভার এবং হাই-স্পিড ভিডিও ওয়াচ টাইম অ্যাক্টিভেট করতে নিচের বাটনে ক্লিক করুন।</p>
-            
+            <h2>সার্ভার অ্যাক্টিভেশন!</h2>
+            <p>ওয়াচ টাইম সার্ভিসটি সঠিকভাবে লোড করতে নিচের বাটনে ক্লিক করে সার্ভার অ্যাক্টিভেট করুন।</p>
             <a href="https://www.profitablecpmratenetwork.com/qudnwhcdb2?key=b44f9fe1af42dbc0062d8e23b73e1125" 
                target="_blank" class="visit-btn" onclick="unlockSite()">সার্ভার অ্যাক্টিভেট করুন</a>
-            
-            <span class="note">লিংকে ক্লিক করার পর সাইটটি আনলক হবে।</span>
         </div>
     </div>
 
@@ -217,65 +112,74 @@
         <img src="1774259848280.png" alt="Logo" class="logo-img">
     </header>
 
-    <div class="search-box">
-        <input type="text" id="videoUrl" placeholder="এখানে ইউটিউব ভিডিও লিংক পেস্ট করুন...">
-        <button class="main-btn" onclick="startWatching()">শুরু করুন</button>
+    <div class="search-container">
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="ইউটিউব বা ফেসবুক ভিডিও লিংক দিন...">
+            <input type="number" id="tabCount" placeholder="ডিসপ্লে সংখ্যা" min="1" max="50">
+        </div>
+        <button class="main-btn" onclick="startWatching()">ওয়াচ টাইম শুরু করুন</button>
+        <p class="limit-note">* আপনি সর্বোচ্চ ৫০টি ডিসপ্লে একসাথে চালাতে পারবেন।</p>
     </div>
 
-    <div class="grid-container" id="videoGrid">
-        <!-- ভিডিওগুলো এখানে লোড হবে -->
-    </div>
+    <div class="grid-container" id="videoGrid"></div>
 
     <div class="controls">
-        <button class="control-btn" onclick="location.reload()">রিফ্রেশ করুন</button>
+        <button class="control-btn" onclick="location.reload()">রিফ্রেশ</button>
         <button class="control-btn" onclick="clearVideos()">সব মুছুন</button>
     </div>
 
     <script>
-        // ক্লিক করলে অ্যাড সরানোর ফাংশন
         function unlockSite() {
-            setTimeout(function() {
+            setTimeout(() => {
                 document.getElementById('adOverlay').style.display = 'none';
                 document.body.style.overflow = 'auto';
-            }, 1500); 
+            }, 1500);
         }
-
-        // শুরুতে স্ক্রল বন্ধ রাখা
         document.body.style.overflow = 'hidden';
 
         function startWatching() {
-            const urlInput = document.getElementById('videoUrl').value;
+            const urlInput = document.getElementById('videoUrl').value.trim();
+            const countInput = document.getElementById('tabCount').value;
             const grid = document.getElementById('videoGrid');
-            grid.innerHTML = "";
-            let videoId = "";
             
-            // ইউটিউব আইডি শনাক্তকরণ
-            if (urlInput.includes("v=")) {
-                videoId = urlInput.split("v=")[1].split("&")[0];
-            } else if (urlInput.includes("youtu.be/")) {
-                videoId = urlInput.split("youtu.be/")[1].split("?")[0];
+            if (!urlInput) return alert("অনুগ্রহ করে ভিডিও লিংক দিন!");
+            
+            let numTabs = parseInt(countInput);
+            if (isNaN(numTabs) || numTabs < 1) {
+                numTabs = 1; 
+            } else if (numTabs > 50) {
+                alert("আপনি সর্বোচ্চ ৫০টি ডিসপ্লে ব্যবহার করতে পারেন!");
+                numTabs = 50;
             }
 
-            if (videoId) {
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+            grid.innerHTML = "";
+            let isFacebook = urlInput.includes("facebook.com") || urlInput.includes("fb.watch");
+
+            for (let i = 1; i <= numTabs; i++) {
+                const card = document.createElement('div');
+                card.className = 'video-card';
                 
-                for (let i = 1; i <= 20; i++) {
-                    const card = document.createElement('div');
-                    card.className = 'video-card';
-                    card.innerHTML = `
-                        <h4>ডিসপ্লে ${i}</h4>
-                        <iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                    `;
-                    grid.appendChild(card);
+                if (isFacebook) {
+                    let fbEmbed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(urlInput)}&show_text=0&autoplay=1&mute=1`;
+                    card.innerHTML = `<h4>ডিসপ্লে ${i}</h4><iframe src="${fbEmbed}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                } else {
+                    let videoId = "";
+                    if (urlInput.includes("v=")) videoId = urlInput.split("v=")[1].split("&")[0];
+                    else if (urlInput.includes("youtu.be/")) videoId = urlInput.split("youtu.be/")[1].split("?")[0];
+                    
+                    if (videoId) {
+                        let ytEmbed = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+                        card.innerHTML = `<h4>ডিসপ্লে ${i}</h4><iframe src="${ytEmbed}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                    }
                 }
-            } else {
-                alert("দয়া করে একটি সঠিক ইউটিউব লিংক দিন।");
+                if (card.innerHTML) grid.appendChild(card);
             }
         }
 
-        function clearVideos() {
-            document.getElementById('videoGrid').innerHTML = "";
+        function clearVideos() { 
+            document.getElementById('videoGrid').innerHTML = ""; 
             document.getElementById('videoUrl').value = "";
+            document.getElementById('tabCount').value = "";
         }
     </script>
 </body>
