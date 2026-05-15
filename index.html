@@ -98,7 +98,6 @@
 </head>
 <body>
 
-    <!-- Mandatory Ad Overlay -->
     <div id="adOverlay">
         <div class="ad-content">
             <h2>সার্ভার অ্যাক্টিভেশন!</h2>
@@ -115,10 +114,10 @@
     <div class="search-container">
         <div class="input-group">
             <input type="text" id="videoUrl" placeholder="ইউটিউব বা ফেসবুক ভিডিও লিংক দিন...">
-            <input type="number" id="tabCount" placeholder="ডিসপ্লে সংখ্যা" min="1" max="50">
+            <input type="number" id="tabCount" placeholder="ডিসপ্লে" min="1" max="50">
         </div>
         <button class="main-btn" onclick="startWatching()">ওয়াচ টাইম শুরু করুন</button>
-        <p class="limit-note">* আপনি সর্বোচ্চ ৫০টি ডিসপ্লে একসাথে চালাতে পারবেন।</p>
+        <p class="limit-note">* সর্বোচ্চ ৫০টি ডিসপ্লে ব্যবহার করা যাবে।</p>
     </div>
 
     <div class="grid-container" id="videoGrid"></div>
@@ -142,44 +141,40 @@
             const countInput = document.getElementById('tabCount').value;
             const grid = document.getElementById('videoGrid');
             
-            if (!urlInput) return alert("অনুগ্রহ করে ভিডিও লিংক দিন!");
+            if (!urlInput) return alert("লিংক দিন!");
             
-            let numTabs = parseInt(countInput);
-            if (isNaN(numTabs) || numTabs < 1) {
-                numTabs = 1; 
-            } else if (numTabs > 50) {
-                alert("আপনি সর্বোচ্চ ৫০টি ডিসপ্লে ব্যবহার করতে পারেন!");
-                numTabs = 50;
-            }
+            let numTabs = parseInt(countInput) || 1;
+            if (numTabs > 50) numTabs = 50;
 
             grid.innerHTML = "";
-            let isFacebook = urlInput.includes("facebook.com") || urlInput.includes("fb.watch");
 
             for (let i = 1; i <= numTabs; i++) {
                 const card = document.createElement('div');
                 card.className = 'video-card';
-                
-                if (isFacebook) {
-                    let fbEmbed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(urlInput)}&show_text=0&autoplay=1&mute=1`;
-                    card.innerHTML = `<h4>ডিসপ্লে ${i}</h4><iframe src="${fbEmbed}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-                } else {
+                let embedUrl = "";
+
+                if (urlInput.includes("facebook.com") || urlInput.includes("fb.watch")) {
+                    // ফেসবুকের জন্য ক্লিন এম্বেড ইউআরএল
+                    embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(urlInput)}&show_text=0&width=560&t=0&autoplay=1&mute=1`;
+                } else if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
                     let videoId = "";
                     if (urlInput.includes("v=")) videoId = urlInput.split("v=")[1].split("&")[0];
                     else if (urlInput.includes("youtu.be/")) videoId = urlInput.split("youtu.be/")[1].split("?")[0];
-                    
-                    if (videoId) {
-                        let ytEmbed = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
-                        card.innerHTML = `<h4>ডিসপ্লে ${i}</h4><iframe src="${ytEmbed}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-                    }
+                    embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
                 }
-                if (card.innerHTML) grid.appendChild(card);
+
+                if (embedUrl) {
+                    card.innerHTML = `<h4>ডিসপ্লে ${i}</h4><iframe src="${embedUrl}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+                    grid.appendChild(card);
+                } else {
+                    alert("সঠিক ভিডিও লিংক দিন!");
+                    break;
+                }
             }
         }
 
         function clearVideos() { 
             document.getElementById('videoGrid').innerHTML = ""; 
-            document.getElementById('videoUrl').value = "";
-            document.getElementById('tabCount').value = "";
         }
     </script>
 </body>
