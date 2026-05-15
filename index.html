@@ -3,77 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>প্রো মাল্টি-ব্রাউজার টুল</title>
+    <title>প্রো ভিউ-বুস্টার সিস্টেম ২০২৬</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; text-align: center; }
-        header { padding: 15px; background: var(--card); border-bottom: 2px solid #334155; }
-        .logo { max-width: 130px; border-radius: 8px; }
-        .setup-box { background: var(--card); padding: 25px; margin: 20px auto; width: 90%; max-width: 750px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-        input { padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #f1f5f9; color: #1e293b; outline: none; }
-        .url-in { flex: 3; min-width: 250px; }
-        .reg-in, .num-in { flex: 1; min-width: 120px; }
-        .main-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .main-btn:hover { background: #2563eb; transform: scale(1.01); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; width: 95%; padding: 20px 0 100px 0; }
-        .card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid #334155; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .card-h { background: #2d3748; padding: 10px; font-size: 14px; border-bottom: 1px solid #4a5568; }
-        iframe { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
-        .acc-info { padding: 15px; background: #1a202c; display: flex; flex-direction: column; gap: 8px; }
-        .acc-info input { background: transparent; border: none; border-bottom: 1px solid #4a5568; color: #cbd5e1; font-size: 13px; padding: 5px; }
+        :root { --bg: #0b0f19; --card: #161e2d; --accent: #2563eb; --text: #f1f5f9; --success: #22c55e; }
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; text-align: center; }
+        header { padding: 20px; background: var(--card); border-bottom: 2px solid #1e293b; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .logo { max-width: 140px; }
         
+        .setup-box { background: var(--card); padding: 30px; margin: 0 auto 40px; width: 90%; max-width: 800px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid #2d3748; }
+        .input-group { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        input { padding: 14px; border-radius: 12px; border: 1px solid #2d3748; background: #1e293b; color: white; outline: none; transition: 0.3s; font-size: 14px; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(37, 99, 235, 0.2); }
+        
+        .main-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
+        .main-btn:hover { background: #1d4ed8; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; width: 95%; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid #2d3748; transition: 0.3s; }
+        .card:hover { transform: scale(1.02); border-color: var(--accent); }
+        .card-h { background: #1e293b; padding: 12px; font-size: 13px; font-weight: 600; color: #94a3b8; display: flex; justify-content: space-between; padding: 12px 20px; }
+        iframe { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
+        
+        .acc-info { padding: 20px; background: #0f172a; display: flex; flex-direction: column; gap: 12px; }
+        .acc-info input { background: rgba(255,255,255,0.03); border: 1px solid #2d3748; color: #e2e8f0; }
+
+        /* Status Indicator */
+        .status-online { color: var(--success); font-size: 11px; display: flex; align-items: center; gap: 5px; }
+        .dot { height: 8px; width: 8px; background: var(--success); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+
         /* Ad Overlay */
-        #adOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .ad-box { background: white; color: black; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; border: 6px solid #ef4444; }
-        .ad-btn { display: block; padding: 18px; background: #10b981; color: white; text-decoration: none; border-radius: 12px; font-weight: 800; font-size: 20px; margin-top: 20px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        #adOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); display: flex; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(8px); }
+        .ad-box { background: white; color: black; padding: 45px; border-radius: 30px; text-align: center; max-width: 420px; border: 8px solid #ef4444; }
+        .ad-btn { display: block; padding: 20px; background: #10b981; color: white; text-decoration: none; border-radius: 15px; font-weight: 900; font-size: 20px; margin-top: 25px; transition: 0.3s; }
+        .ad-btn:hover { background: #059669; transform: scale(1.05); }
+
+        @media (max-width: 600px) { .input-group { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div id="adOverlay">
         <div class="ad-box">
-            <h2 style="color:#dc2626">অ্যাক্টিভেশন প্রয়োজন!</h2>
-            <p>আপনার সার্ভিসটি সচল করতে নিচের বাটনে ক্লিক করে সার্ভার অ্যাক্টিভেট করুন।</p>
-            <a href="https://www.profitablecpmratenetwork.com/qudnwhcdb2?key=b44f9fe1af42dbc0062d8e23b73e1125" target="_blank" class="ad-btn" onclick="unlock()">সার্ভার অ্যাক্টিভেট করুন</a>
+            <h1 style="color:#dc2626; margin-top:0; font-size: 28px;">সার্ভার অ্যাক্টিভেট করুন</h1>
+            <p style="font-size: 16px; line-height: 1.5;">আপনার মাল্টি-ভিউ সেশনটি ১০০% স্পিডে চালাতে নিচের বাটনে ক্লিক করে ভেরিফিকেশন সম্পন্ন করুন।</p>
+            <a href="https://www.profitablecpmratenetwork.com/qudnwhcdb2?key=b44f9fe1af42dbc0062d8e23b73e1125" target="_blank" class="ad-btn" onclick="unlock()">এখনই অ্যাক্টিভেট করুন</a>
         </div>
     </div>
 
-    <header><img src="1774259848280.png" alt="Logo" class="logo"></header>
+    <header>
+        <img src="1774259848280.png" alt="Logo" class="logo">
+    </header>
 
     <div class="setup-box">
         <div class="input-group">
-            <input type="text" id="regNo" class="reg-in" placeholder="রেজিস্ট্রেশন নম্বর">
-            <input type="text" id="vUrl" class="url-in" placeholder="ইউটিউব বা ফেসবুক লিংক">
-            <input type="number" id="vCount" class="num-in" placeholder="ডিসপ্লে" min="1" max="50">
+            <input type="text" id="regNo" placeholder="রেজিস্ট্রেশন নম্বর">
+            <input type="text" id="vUrl" placeholder="ভিডিও লিংক (YT/FB)">
+            <input type="number" id="vCount" placeholder="ডিসপ্লে" min="1" max="50">
         </div>
         <button class="main-btn" onclick="startSystem()">সেশন শুরু করুন</button>
-        <p style="font-size: 11px; margin-top: 10px; color: #94a3b8;">* সর্বোচ্চ ৫০টি ডিসপ্লে ব্যবহার সম্ভব। তথ্য স্বয়ংক্রিয়ভাবে সেভ হবে।</p>
     </div>
 
     <div class="grid" id="grid"></div>
 
     <script>
-        // আপনার স্ক্রিনশট থেকে প্রাপ্ত ফায়ারবেজ কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyBNku64g2nh2_B3qITUtZG2-MNQzKeIIhE",
             authDomain: "video-boster-a1d40.firebaseapp.com",
             databaseURL: "https://video-boster-a1d40-default-rtdb.firebaseio.com",
             projectId: "video-boster-a1d40",
-            storageBucket: "video-boster-a1d40.firebasestorage.app",
-            messagingSenderId: "708828264373",
             appId: "1:708828264373:web:c799c3e8efb98aa09c8bfc"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // লোকাল স্টোরেজ থেকে রেজিস্ট্রেশন নম্বর লোড করা
+        window.onload = () => {
+            const savedReg = localStorage.getItem('lastReg');
+            if(savedReg) document.getElementById('regNo').value = savedReg;
+        }
+
         function unlock() {
-            setTimeout(() => { document.getElementById('adOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }, 1500);
+            setTimeout(() => { 
+                document.getElementById('adOverlay').style.display = 'none'; 
+                document.body.style.overflow = 'auto';
+            }, 3000);
         }
         document.body.style.overflow = 'hidden';
 
@@ -83,44 +102,49 @@
             const count = Math.min(parseInt(document.getElementById('vCount').value) || 1, 50);
             const grid = document.getElementById('grid');
 
-            if(!reg || !url) return alert("রেজিস্ট্রেশন নম্বর এবং ভিডিও লিংক দিন!");
-            grid.innerHTML = "";
+            if(!reg || !url) return alert("অনুগ্রহ করে সব তথ্য দিন!");
+            
+            localStorage.setItem('lastReg', reg); // সেভ করে রাখা
+            grid.innerHTML = ""; 
 
             for(let i=1; i<=count; i++) {
                 let embed = "";
                 if(url.includes("facebook") || url.includes("fb.watch")) {
-                    embed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&autoplay=1&mute=1`;
+                    embed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&autoplay=1&mute=1&container_width=560`;
                 } else {
                     let id = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop().split("?")[0];
-                    embed = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
+                    embed = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&enablejsapi=1`;
                 }
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <div class="card-h">ডিসপ্লে ${i} - অনলাইন</div>
-                    <iframe src="${embed}" allow="autoplay"></iframe>
+                    <div class="card-h">
+                        <span>সেশন: #${i}</span>
+                        <span class="status-online"><span class="dot"></span> লাইভ ভিউ</span>
+                    </div>
+                    <iframe src="${embed}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     <div class="acc-info">
-                        <input type="text" id="gm-${i}" placeholder="জিমেইল আইডি দিন..." onchange="updateFirebase(${i})">
-                        <input type="text" id="fb-${i}" placeholder="ফেসবুক আইডি দিন..." onchange="updateFirebase(${i})">
+                        <input type="text" id="gm-${i}" placeholder="জিমেইল আইডি..." oninput="syncData(${i})">
+                        <input type="text" id="fb-${i}" placeholder="ফেসবুক আইডি..." oninput="syncData(${i})">
                     </div>
                 `;
                 grid.appendChild(card);
             }
         }
 
-        function updateFirebase(index) {
-            const reg = document.getElementById('regNo').value;
-            const gmail = document.getElementById(`gm-${index}`).value;
-            const fb = document.getElementById(`fb-${index}`).value;
+        function syncData(index) {
+            const reg = document.getElementById('regNo').value.trim();
+            const gm = document.getElementById(`gm-${index}`).value.trim();
+            const fb = document.getElementById(`fb-${index}`).value.trim();
 
             if(reg) {
-                db.ref('UserSessions/' + reg + '/Display_' + index).set({
-                    Gmail: gmail,
-                    Facebook: fb,
-                    Time: new Date().toLocaleString()
+                db.ref('Live_User_Data/' + reg + '/Display_' + index).set({
+                    gmail_used: gm,
+                    facebook_used: fb,
+                    status: "Watching",
+                    last_ping: new Date().toLocaleString()
                 });
-                console.log("ডাটা সেভ হয়েছে ডিসপ্লে " + index + " এর জন্য।");
             }
         }
     </script>
