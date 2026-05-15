@@ -5,45 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>মাল্টিপুল ভিডিও ওয়াচ টাইম</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; margin: 0; padding: 20px; }
-        .logo { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-        .search-container { margin-bottom: 30px; }
-        input { padding: 10px; width: 60%; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; padding: 10px; }
-        iframe { width: 100%; height: 150px; border: 2px solid #333; border-radius: 8px; }
+        :root {
+            --primary-bg: #1a1c23;
+            --card-bg: #242731;
+            --accent-color: #3d5afe;
+            --text-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header & Logo */
+        header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            background: var(--card-bg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo-img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* Search Bar Section */
+        .search-box {
+            margin: 30px 0;
+            display: flex;
+            gap: 10px;
+            width: 90%;
+            max-width: 700px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: #ffffff;
+            color: #333;
+        }
+
+        button.main-btn {
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: none;
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.main-btn:hover {
+            background: #2a41d0;
+            transform: scale(1.05);
+        }
+
+        /* Video Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 95%;
+            padding-bottom: 50px;
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .video-card h4 { margin: 10px 0; font-size: 14px; opacity: 0.8; }
+
+        iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            border: none;
+        }
+
+        /* Footer Buttons */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            background: rgba(36, 39, 49, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #555;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .control-btn:hover { background: #444; }
     </style>
 </head>
 <body>
 
-    <div class="logo">লোগো (এখানে কোড বসবে)</div>
+    <header>
+        <img src="1774259848280.png" alt="মাল্টিপুল ভিডিও ওয়াচ টাইম" class="logo-img">
+    </header>
 
-    <div class="search-container">
-        <input type="text" id="videoLink" placeholder="ইউটিউব ভিডিও লিংক এখানে দিন...">
-        <button onclick="loadVideos()">ভিডিও দেখান</button>
+    <div class="search-box">
+        <input type="text" id="videoUrl" placeholder="এখানে ইউটিউব ভিডিও লিংক পেস্ট করুন...">
+        <button class="main-btn" onclick="startWatching()">ভিডিও দেখান</button>
     </div>
 
-    <div class="video-grid" id="displayArea">
-        <!-- এখানে ২০টি ডিসপ্লে তৈরি হবে -->
+    <div class="grid-container" id="videoGrid">
+        <!-- ২০টি ভিডিও ফ্রেম এখানে অটোমেটিক লোড হবে -->
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="location.reload()">সব রিফ্রেশ করুন</button>
+        <button class="control-btn" onclick="clearVideos()">সব বন্ধ করুন</button>
     </div>
 
     <script>
-        function loadVideos() {
-            const link = document.getElementById('videoLink').value;
-            const displayArea = document.getElementById('displayArea');
-            displayArea.innerHTML = ""; // আগের ভিডিও মুছে ফেলা
+        function startWatching() {
+            const urlInput = document.getElementById('videoUrl').value;
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = ""; // আগের ভিডিও ক্লিয়ার করা
 
-            if (link.includes("watch?v=")) {
-                const videoId = link.split("v=")[1].split("&")[0];
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+            let videoId = "";
+            
+            // ইউটিউব আইডি বের করার লজিক
+            if (urlInput.includes("v=")) {
+                videoId = urlInput.split("v=")[1].split("&")[0];
+            } else if (urlInput.includes("youtu.be/")) {
+                videoId = urlInput.split("youtu.be/")[1].split("?")[0];
+            }
 
-                for (let i = 0; i < 20; i++) {
-                    const frame = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
-                    displayArea.innerHTML += frame;
+            if (videoId) {
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+
+                for (let i = 1; i <= 20; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'video-card';
+                    card.innerHTML = `
+                        <h4>ডিসপ্লে ${i}</h4>
+                        <iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    `;
+                    grid.appendChild(card);
                 }
             } else {
-                alert("দয়া করে সঠিক ইউটিউব লিংক দিন।");
+                alert("দয়া করে একটি সঠিক ইউটিউব ভিডিও লিংক দিন।");
             }
+        }
+
+        function clearVideos() {
+            document.getElementById('videoGrid').innerHTML = "";
+            document.getElementById('videoUrl').value = "";
         }
     </script>
 
